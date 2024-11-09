@@ -7,8 +7,11 @@ docker build -t ${IMAGE_TAG} .
 
 STOPPED_CONTAINERS=$(docker ps -aq)
 if [ -n "$STOPPED_CONTAINERS" ]; then
-echo "here"
-    docker rm $STOPPED_CONTAINERS
+  docker rm $STOPPED_CONTAINERS
 fi
 
-docker run -it -e DISPLAY=${DISPLAY} --name steerait ${IMAGE_TAG} "/bin/bash"
+if [ "$1" == "--headless" ]; then
+  docker run -it --name steerai ${IMAGE_TAG} "/bin/bash"
+else
+  docker run -it -e DISPLAY=${DISPLAY} --name steerai ${IMAGE_TAG} "/bin/bash"
+fi

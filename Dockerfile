@@ -26,9 +26,6 @@ RUN mkdir -p ${GEM_SRC_PATH} && \
     catkin_make
 # Development
 RUN apt install -y vim
-#RUN apt update -y && apt install -y gedit
-#RUN apt update -y && apt install -y ros-noetic-rqt ros-noetic-rqt-common-plugins ros-noetic-rqt-robot-plugins
-#RUN apt update -y && apt install -y ros-noetic-joint-state-publisher ros-noetic-robot-state-publisher
-#RUN apt update -y && apt install -y libgl1-mesa-glx x11-apps && rm -rf /var/lib/apt/lists/*
-CMD ["gedit"]
+COPY sim.sh run.sh headless.sh /
 
+CMD ["bash"]
