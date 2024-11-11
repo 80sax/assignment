@@ -26,6 +26,10 @@ RUN mkdir -p ${GEM_SRC_PATH} && \
     catkin_make
 # Development
 RUN apt install -y vim
-COPY sim.sh run.sh headless.sh /
+COPY scripts /scripts
+# Testing
+COPY tests /tests
+COPY simulator.sh run_test.sh /
+COPY error_sim.py /gem_ws/src/POLARIS_GEM_e2/polaris_gem_drivers_sim/gem_pure_pursuit_sim/scripts/error_sim.py
 
 CMD ["bash"]
