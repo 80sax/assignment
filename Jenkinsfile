@@ -1,24 +1,29 @@
 pipeline {
   agent {
     kubernetes {
-      label 'jenkins-assigment-jenkins-agent'
-      defaultContainer 'jnlp'
+      yaml """
+kind: Pod
+spec:
+  containers:
+  - name: kaniko
+    image: gcr.io/kaniko-project/executor:latest
+    imagePullPolicy: IfNotPresent
+    command:
+    - sleep
+    args:
+    - infinity
+"""
     }
   }
+
   stages {
-    stage('ROS setup') {
+    stage('Build ROS Image') {
       steps {
-        echo 'Building..'
-      }
-    }
-    stage('Launch Simulator') {
-      steps {
-        echo 'Testing..'
-      }
-    }
-    stage('Test') {
-      steps {
-        echo 'Deploying....'
+        container(name: 'kaniko', shell: '/busybox/sh') {
+          sh '''#!/busybox/sh
+            /kaniko/executor --context `pwd` --no-push
+          '''
+        }
       }
     }
   }
