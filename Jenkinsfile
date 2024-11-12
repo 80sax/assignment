@@ -16,15 +16,26 @@ spec:
     }
   }
 
+  environment {
+    ROS_IMAGE = 'docker.io/asoteloa/assignment:latest'
+    DOCKER_CONFIG_PATH = '/kaniko/.docker/config.json'
+  }
+
   stages {
     stage('Build ROS Image') {
       steps {
-        container(name: 'kaniko', shell: '/busybox/sh') {
-          sh '''#!/busybox/sh
-            /kaniko/executor --context `pwd` --no-push
-          '''
+        withCredentials([usernamePassword(credentialsId: 'docker-registry-abraham-credentials',
+                                          usernameVariable: 'DOCKER_USER',
+                                          passwordVariable: 'DOCKER_PASS')]) {
+          container(name: 'kaniko', shell: '/busybox/sh') {
+            sh """#!/busybox/sh
+              mkdir -p /kaniko/.docker
+              echo '{ "auths": { "https://index.docker.io/v1/": { "auth": "'\$(echo -n \$DOCKER_USER:\$DOCKER_PASS | base64)'" } } }' > \$DOCKER_CONFIG_PATH
+              /kaniko/executor --context \$(pwd) --destination ${ROS_IMAGE}
+            """
+          }
         }
       }
-    }
-  }
+    } // Build ROS Image
+  } // stages
 }
