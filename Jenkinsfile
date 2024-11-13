@@ -1,4 +1,5 @@
 def ROS_IMAGE = 'docker.io/asoteloa/assignment:latest'
+
 pipeline {
   agent {
     kubernetes {
@@ -15,6 +16,7 @@ spec:
     - infinity
   - name: simulator
     image: ${ROS_IMAGE}
+    imagePullPolicy: IfNotPresent
     command:
     - sleep
     args:
@@ -25,13 +27,7 @@ spec:
   parameters { booleanParam(name: 'BUILD_ROS_IMAGE', defaultValue: false, description: 'Build ROS Image') }
 
   environment {
-<<<<<<< HEAD
-    ROS_IMAGE = 'docker.io/asoteloa/assignment:latest'
     DOCKER_CONFIG_PATH = '/kaniko/.docker/config.json'
-=======
-    DOCKER_CONFIG_PATH = '/kaniko/.docker/config.json'
-    POD_NAME = "simulator-pod-${env.BUILD_ID}"
->>>>>>> 7bdc5b5 (Running 2 stages in the same container)
   }
 
   stages {
@@ -54,15 +50,11 @@ spec:
 
     stage ('Run Simulator') {
       steps {
-<<<<<<< HEAD
-        sh '''#!/bin/sh
-          echo Skiping build!
-        '''
-      }
-    } // Run Simulator
-=======
         container ('simulator') {
-          sh "./simulator.sh"
+          sh """
+            ./simulator.sh &
+            sleep 20
+          """
         }
       }
     } // Run Simulator
@@ -75,6 +67,5 @@ spec:
       }
     } // Testing
 
->>>>>>> 7bdc5b5 (Running 2 stages in the same container)
   } // stages
 }
