@@ -15,6 +15,7 @@ spec:
       """
     }
   }
+  parameters { booleanParam(name: 'BUILD_ROS_IMAGE', defaultValue: false, description: 'Build ROS Image') }
 
   environment {
     ROS_IMAGE = 'docker.io/asoteloa/assignment:latest'
@@ -23,6 +24,7 @@ spec:
 
   stages {
     stage('Build ROS Image') {
+      when { expression { params.BUILD_ROS_IMAGE } }
       steps {
         withCredentials([usernamePassword(credentialsId: 'docker-registry-abraham-credentials',
                                           usernameVariable: 'DOCKER_USER',
@@ -37,5 +39,13 @@ spec:
         }
       }
     } // Build ROS Image
+
+    stage ('Run Simulator') {
+      steps {
+        sh '''#!/bin/sh
+          echo Skiping build!
+        '''
+      }
+    } // Run Simulator
   } // stages
 }
