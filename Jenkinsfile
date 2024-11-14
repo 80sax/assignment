@@ -81,7 +81,7 @@ spec:
       always {
         script {BUILD_STATUS = currentBuild.currentResult}
         mail (
-          to: "asoteloa@outlook.com",
+          to: "Polina.Koornneef@tii.ae, Dimitrios.Pediaditis@tii.ae",
           from: "Jenkins <no-reply@mail.com>",
           subject: "Jenkins pipeline ${BUILD_STATUS}: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
           body: "The pipeline \"${env.JOB_NAME}\" has completed with status: ${BUILD_STATUS}.\nBuild URL: ${env.BUILD_URL}"
