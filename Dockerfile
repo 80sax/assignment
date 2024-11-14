@@ -24,10 +24,10 @@ RUN mkdir -p ${GEM_SRC_PATH} && \
     source /opt/ros/noetic/setup.bash && \
     cd ${GEM_PATH} && \
     catkin_make
-# Development
+# Development packages and scripts
 RUN apt install -y vim
 COPY scripts /scripts
-# Testing
+# CI Scripts
 COPY tests /tests
 COPY simulator.sh run_test.sh /
 COPY error_sim.py /gem_ws/src/POLARIS_GEM_e2/polaris_gem_drivers_sim/gem_pure_pursuit_sim/scripts/error_sim.py
