@@ -4,7 +4,7 @@ import re
 
 class Test_Crosstrack_error(unittest.TestCase):
 
-  MAX_SIM_STEPS = 250
+  MAX_SIM_STEPS = 250           # To avoid waiting too long for the simulation to finish
   MAX_CROSSTRACK_ERROR = 1.0
   SIMS_PATH = "/gem_ws/src/POLARIS_GEM_e2/polaris_gem_drivers_sim/"
 
@@ -17,7 +17,7 @@ class Test_Crosstrack_error(unittest.TestCase):
       steps = 0
       for line in process.stdout:
         print(line.strip())
-        match = re.search(r"([\d\.-]+)", line)
+        match = re.search(r"([\d\.-]+)", line)   # Extracts the crosstrack error value
         crosstrack_error_value = float(match.group(1))
         self.assertLessEqual(abs(crosstrack_error_value), self.MAX_CROSSTRACK_ERROR)
 
@@ -26,19 +26,19 @@ class Test_Crosstrack_error(unittest.TestCase):
           break
     finally:
       print(f"Stopping {SCRIPT_NAME} simulation...")
-      process.stdout.close()
+      process.stdout.close()        # Close the pipe to avoid a deadlock
       process.terminate()
       process.wait()
     
-
+  # Original test
   def test_pure_pursuit(self):
     script = "/gem_ws/src/POLARIS_GEM_e2/polaris_gem_drivers_sim/gem_pure_pursuit_sim/scripts/pure_pursuit_sim.py"
     self._test_sim(script)
 
-
-  #def test_error_sim(self):
-  #  script = "/gem_ws/src/POLARIS_GEM_e2/polaris_gem_drivers_sim/gem_pure_pursuit_sim/scripts/error_sim.py"
-  #  self._test_sim(script)
+  # Modified test with crosstrack error > 1.0
+  def test_error_sim(self):
+    script = "/gem_ws/src/POLARIS_GEM_e2/polaris_gem_drivers_sim/gem_pure_pursuit_sim/scripts/error_sim.py"
+    self._test_sim(script)
 
 
 if __name__ == "__main__":

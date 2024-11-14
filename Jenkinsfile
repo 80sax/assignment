@@ -24,7 +24,10 @@ spec:
       """
     }
   }
-  parameters { booleanParam(name: 'BUILD_ROS_IMAGE', defaultValue: false, description: 'Build ROS Image') }
+  parameters {
+    booleanParam(name: 'BUILD_ROS_IMAGE', defaultValue: false, description: 'Build ROS Image')
+    booleanParam(name: 'RUN_FAIL_TEST', defaultValue: false, description: 'Run failing test')
+  }
 
   environment {
     DOCKER_CONFIG_PATH = '/kaniko/.docker/config.json'
@@ -55,7 +58,7 @@ spec:
           sh """
             ./simulator.sh &
             sleep 20
-          """
+          """       // Sleeps for 20 seconds to allow the simulator to start
         }
       }
     } // Run Simulator
@@ -63,7 +66,12 @@ spec:
     stage('Testing') {
       steps {
         container ('simulator') {
-          sh "./run_test.sh"
+          sh """
+            if [ "$params.RUN_FAIL_TEST" = true ]; then
+              FAIL=--fail
+            fi
+            ./run_test.sh \$FAIL
+          """
         }
       }
     } // Testing
